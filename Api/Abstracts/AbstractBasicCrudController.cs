@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Api.Abstracts
 {
+    [Route("api/[controller]")]
     public abstract class AbstractBasicCrudController<T> : Controller where T: IEntity
     {
         /// <summary>

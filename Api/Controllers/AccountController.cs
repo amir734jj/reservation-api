@@ -34,9 +34,12 @@ namespace Api.Controllers
         [SwaggerOperation("AccountInfo")]
         public async Task<IActionResult> Index()
         {
-            return User.Identity.IsAuthenticated
-                ? Ok(await _userManager.FindByEmailAsync(User.Identity.Name))
-                : Ok(new object());
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(await _userManager.FindByEmailAsync(User.Identity.Name));
+            }
+
+            return BadRequest("Not logged-in!");
         }
 
         [HttpGet]
@@ -60,17 +63,13 @@ namespace Api.Controllers
             };
             
             var result = await _userManager.CreateAsync(user, registerViewModel.Password);
-            
-            return result.Succeeded ? (IActionResult) Ok("Successfully registerd!") : BadRequest("Failed to register!");
-        }
 
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet]
-        [Route("Login")]
-        [SwaggerOperation("Login")]
-        public async Task<IActionResult> Login()
-        {
-            return Ok("Please log-in by posting to this route!");
+            if (result.Succeeded)
+            {
+                return Ok("Successfully registerd!");
+            }
+
+            return BadRequest("Failed to register!");
         }
 
         [HttpPost]
@@ -120,14 +119,6 @@ namespace Api.Controllers
             await _signManager.SignOutAsync();
 
             return Ok("Logged-Out");
-        }
-
-        [HttpGet]
-        [Route("Forbidden")]
-        [SwaggerOperation("Forbidden")]
-        public async Task<IActionResult> Forbidden()
-        {
-            return Ok("Forbidden");
         }
     }
 }

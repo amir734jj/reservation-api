@@ -10,7 +10,6 @@
         <PackageReference Include="Swashbuckle.AspNetCore" Version="1.2.0" />
         <PackageReference Include="Ben.Demystifier" Version="0.1.4" />
         <PackageReference Include="Microsoft.AspNetCore.All" />
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.0.165" />
         <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="2.0.0" />
     </ItemGroup>

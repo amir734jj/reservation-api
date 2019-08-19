@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Reflection;
 using System.Text;
+using AgileObjects.AgileMapper;
+using Api.Attributes;
 using Api.Configs;
-using AutoMapper;
 using Dal;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -79,9 +78,6 @@ namespace Api
                     });
             });
 
-            // All the other service configuration.
-            services.AddAutoMapper(opt => opt.AddProfiles(Assembly.Load("Models")));
-
             services.AddDbContext<EntityDbContext>(opt =>
             {
                 switch (_env.EnvironmentName)
@@ -139,7 +135,7 @@ namespace Api
 
             // Add framework services
             services
-                .AddMvc(opt => { opt.Filters.Add<ExceptionFilterAttribute>(); })
+                .AddMvc(opt => { opt.Filters.Add<ExceptionFilterAttributeImpl>(); })
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -149,13 +145,15 @@ namespace Api
             {
                 opt.SwaggerDoc("v1", new Info
                 {
-                    Title = "dotnet-intermediate-workshop", Version = "v1",
-                    Description = "Workshop exercise application"
+                    Title = "reservation-api", Version = "v1",
+                    Description = "Reservation API"
                 });
 
                 // In swagger, use the name of Enum instead of their integer value
                 opt.DescribeAllEnumsAsStrings();
             });
+
+            services.AddSingleton(Mapper.CreateNew());
 
             _container = new Container(opt =>
             {
