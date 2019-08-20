@@ -2,7 +2,7 @@ using Api.Abstracts;
 using Logic.Interfaces;
 using Models.Entities;
 
-namespace Api.Controllers
+namespace Api.Controllers.Api
 {
     public class ItemController : AbstractBasicCrudController<Item>
     {

@@ -4,11 +4,13 @@ using AgileObjects.AgileMapper;
 using Api.Attributes;
 using Api.Configs;
 using Dal;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using Models.Entities;
 using StructureMap;
 using Swashbuckle.AspNetCore.Swagger;
+using WebMarkupMin.AspNetCore2;
 using static Api.Utilities.ConnectionStringUtility;
 
 namespace Api
@@ -78,6 +81,25 @@ namespace Api
                     });
             });
 
+            services.AddRouting(options => { options.LowercaseUrls = true; });
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromMinutes(50);
+                options.Cookie.HttpOnly = true;
+            });
+
+            services.AddWebMarkupMin(opt =>
+                {
+                    opt.AllowMinificationInDevelopmentEnvironment = true;
+                    opt.AllowCompressionInDevelopmentEnvironment = true;
+                })
+                .AddHtmlMinification()
+                .AddHttpCompression();
+
             services.AddDbContext<EntityDbContext>(opt =>
             {
                 switch (_env.EnvironmentName)
@@ -116,26 +138,25 @@ namespace Api
             services.Configure<JwtSettings>(jwtConfigSection);
 
             services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(config =>
-                {
-                    config.RequireHttpsMetadata = false;
-                    config.SaveToken = true;
-
-                    config.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidIssuer = jwtSetting.Issuer,
-                        ValidAudience = jwtSetting.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSetting.Key))
-                    };
-                });
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(x =>
+            {
+                x.Cookie.MaxAge = TimeSpan.FromMinutes(60);
+            });
 
             // Add framework services
             services
-                .AddMvc(opt => { opt.Filters.Add<ExceptionFilterAttributeImpl>(); })
+                .AddMvc(opt =>
+                {
+                    opt.Filters.Add<ExceptionFilterAttributeImpl>();
+
+                    if (_env.IsDevelopment())
+                    {
+                        opt.Filters.Add<AllowAnonymousFilter>();
+                    }
+                })
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -218,6 +239,10 @@ namespace Api
             });
 
             app.UseAuthentication();
+
+            app.UseCookiePolicy();
+
+            app.UseSession();
 
             app.UseMvc();
 

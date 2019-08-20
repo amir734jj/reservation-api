@@ -12,10 +12,11 @@
         <PackageReference Include="Microsoft.AspNetCore.All" />
         <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.0.165" />
         <PackageReference Include="StructureMap.Microsoft.DependencyInjection" Version="2.0.0" />
+        <PackageReference Include="WebMarkupMin.AspNetCore2" Version="2.5.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Logic\Logic.csproj" />
     </ItemGroup>
-
+    
 </Project>

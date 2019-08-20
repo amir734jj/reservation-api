@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Models.Interfaces;
 
@@ -15,6 +16,6 @@ namespace Models.Entities
 
         public byte[] Image { get; set; }
 
-        public Schedule Schedules { get; set; }
+        public List<Reservation> Reservations { get; set; }
     }
 }

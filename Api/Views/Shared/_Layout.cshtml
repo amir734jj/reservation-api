@@ -1,0 +1,118 @@
+﻿@using API.Extensions
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Identity
+@using Models.Entities
+@inject IHostingEnvironment Env
+@inject UserManager<User> UserManager;
+@{
+    var isAuthenticated = Context.User.Identity.IsAuthenticated;
+    var userInfo = isAuthenticated ? await UserManager.FindByEmailAsync(User.Identity.Name) : null;
+    var cacheBustingSuffix = DateTime.UtcNow.Day;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reservation-App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    @* jQuery*@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    @* angular *@
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    
+    @* bootstrap *@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    @* angular + bootstrap toggle *@
+    <link href="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle@0.1.2/dist/angular-bootstrap-toggle.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle@0.1.2/dist/angular-bootstrap-toggle.min.js"></script>
+    
+    @* angular select *@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script>
+    
+    @* tags input *@
+    <link rel="stylesheet" href="https://mbenford.github.io/ngTagsInput/css/ng-tags-input.min.css" />
+    <script src="https://mbenford.github.io/ngTagsInput/js/ng-tags-input.min.js"></script>
+
+    @* string to table *@
+    <script src="https://cdn.rawgit.com/dtao/string-table/master/stringTable.js"></script>
+    
+    @* PDF engine *@
+    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+    
+    @* Texteditor *@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.10/summernote.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.10/summernote.min.js"></script>
+    
+    @* Table Sort *@
+    <script src="https://cdn.jsdelivr.net/npm/angular-tablesort@1.6.1/js/angular-tablesort.min.js"></script>
+    
+    @* customs *@
+    @if (Env.IsDevelopment())
+    {
+        <script src="~/scripts/script.js?@cacheBustingSuffix"></script>
+        <link rel="stylesheet" href="~/styles/style.css?@cacheBustingSuffix"> 
+    }
+    else
+    {
+        <script src="~/scripts/script.min.js?@cacheBustingSuffix"></script>
+        <link rel="stylesheet" href="~/styles/style.min.css?@cacheBustingSuffix">
+    }
+</head>
+<body>
+  
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" href="~/">Reservation-App</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li class="@(ViewContext.RouteData.Matches("Home") ? "active" : "")">
+                    <a href="/">Register for Tour</a>
+                </li>
+                
+                @if (isAuthenticated)
+                {
+                    
+                }
+            </ul>
+            
+            <ul class="nav navbar-nav navbar-right">
+                @if (!isAuthenticated)
+                {
+                    <li><a href="~/Identity/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="~/Identity/register"><span class="glyphicon glyphicon-pencil"></span> Register</a></li>
+                }
+                else
+                {
+                    <li><a href="~/Identity/Logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container" ng-app="tourApp" ng-cloak>
+    
+    @RenderBody()
+</div>
+
+<div class="clearfix">
+    <br />
+</div>
+<br />
+<br />
+
+</body>
+</html>
