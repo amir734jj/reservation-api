@@ -46,7 +46,9 @@ namespace Api.Controllers.Views
         [Route("Edit/{id}")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            return View();
+            var item = await _itemLogic.Get(id);
+            
+            return View(item);
         }
 
         [HttpPost]
@@ -62,6 +64,8 @@ namespace Api.Controllers.Views
         [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
+            await _itemLogic.Delete(id);
+            
             return RedirectToAction("Index");
         }
     }

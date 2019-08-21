@@ -98,7 +98,7 @@ namespace Dal.Abstracts
             {
                 var entity = await Get(id);
 
-                Mapper().Map(dto).OnTo(entity);
+                Mapper().Map(dto).Over(entity);
 
                 // Update
                 GetDbSet().Update(entity);

@@ -16,6 +16,6 @@ namespace Models.Entities
 
         public byte[] Image { get; set; }
 
-        public List<Reservation> Reservations { get; set; }
+        public List<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }
