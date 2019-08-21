@@ -6,7 +6,6 @@
 @inject UserManager<User> UserManager;
 @{
     var isAuthenticated = Context.User.Identity.IsAuthenticated;
-    var userInfo = isAuthenticated ? await UserManager.FindByEmailAsync(User.Identity.Name) : null;
     var cacheBustingSuffix = DateTime.UtcNow.Day;
 }
 
@@ -78,13 +77,11 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="@(ViewContext.RouteData.Matches("Home") ? "active" : "")">
-                    <a href="/">Register for Tour</a>
-                </li>
-                
                 @if (isAuthenticated)
                 {
-                    
+                    <li class="@(ViewContext.RouteData.Matches("Item") ? "active" : "")">
+                        <a href="/Item">Items</a>
+                    </li>
                 }
             </ul>
             
@@ -104,15 +101,12 @@
 </nav>
 
 <div class="container" ng-app="tourApp" ng-cloak>
-    
     @RenderBody()
 </div>
 
 <div class="clearfix">
     <br />
 </div>
-<br />
-<br />
 
 </body>
 </html>

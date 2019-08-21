@@ -1,0 +1,17 @@
+@model Models.Entities.Item
+
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Id)
+    @Html.TextBoxFor(x => x.Id, new {@class = "form-control", type = "hidden"})
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Name)
+    @Html.TextBoxFor(x => x.Name, new {@class = "form-control", type = "text", placeholder = "Enter name", required = "required"})
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(x => x.Description)
+    @Html.TextBoxFor(x => x.Description, new {@class = "form-control", type = "text", placeholder = "Enter description", required = "required"})
+</div>

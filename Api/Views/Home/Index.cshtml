@@ -1,6 +1,20 @@
-﻿@model object
+﻿@using Microsoft.AspNetCore.Identity
+@using Models.Entities
+@inject UserManager<User> UserManager;
 
 @{
     ViewBag.Title = "title";
     Layout = "_Layout";
+    
+    var isAuthenticated = Context.User.Identity.IsAuthenticated;
+    var userInfo = isAuthenticated ? await UserManager.FindByEmailAsync(User.Identity.Name) : null;
+}
+
+@if (isAuthenticated)
+{
+    <h4>Welcome @userInfo.Fullname!</h4>
+}
+else
+{
+    <h4>Please login!</h4>
 }
