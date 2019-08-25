@@ -141,6 +141,7 @@ namespace Api
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddCookie(x =>
             {
                 x.Cookie.MaxAge = TimeSpan.FromMinutes(60);

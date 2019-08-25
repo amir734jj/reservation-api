@@ -1,0 +1,13 @@
+@model Models.Entities.Item
+
+@{
+    ViewBag.Title = "Login user";
+    Layout = "_Layout";
+}
+
+@using (Html.BeginForm("SaveHandler", "Item", FormMethod.Post, new { }))
+{
+    @Html.Partial("Contents/ItemContent", Model, new ViewDataDictionary(ViewData) {{ "Type", "Save"}})
+
+    <input class="btn btn-primary" type="submit" value="Save"/>
+}
